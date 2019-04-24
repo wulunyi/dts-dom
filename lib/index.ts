@@ -619,10 +619,9 @@ export function never(x: never, err: string): never {
 export interface EmitOptions {
     rootFlags?: ContextFlags;
     tripleSlashDirectives?: TripleSlashDirective[];
-    singleLineJsDocComments?: boolean;
 }
 
-export function emit(rootDecl: TopLevelDeclaration, { rootFlags = ContextFlags.None, tripleSlashDirectives = [], singleLineJsDocComments = false }: EmitOptions = {}): string {
+export function emit(rootDecl: TopLevelDeclaration, { rootFlags = ContextFlags.None, tripleSlashDirectives = [] }: EmitOptions = {}): string {
     let output = "";
     let indentLevel = 0;
 
@@ -730,15 +729,8 @@ export function emit(rootDecl: TopLevelDeclaration, { rootFlags = ContextFlags.N
             start(`// ${decl.comment}`);
             newline();
         }
-
-
         if (decl.jsDocComment) {
-            if (singleLineJsDocComments && decl.jsDocComment.split(/\r?\n/g).length === 1) {
-                start('/**  ');
-                print(decl.jsDocComment.split(/\r?\n/g)[0]);
-                print('  */');
-            }
-            else if (config.wrapJsDocComments) {
+            if (config.wrapJsDocComments) {
                 start('/**');
                 newline();
                 for(const line of decl.jsDocComment.split(/\r?\n/g)) {
